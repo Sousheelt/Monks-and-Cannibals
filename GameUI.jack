@@ -1,0 +1,396 @@
+/**
+ * GameUI handles all user interface rendering for the game.
+ */
+class GameUI {
+    field Game game;
+    field int screenWidth, screenHeight;
+    field int bankWidth, bankHeight;
+    field int riverWidth, riverTop, riverHeight;
+    field int boatWidth, boatHeight;
+    field int personRadius;
+    field int textAreaHeight;
+    
+    /** Constructs a new GameUI */
+    constructor GameUI new(Game gameRef) {
+        let game = gameRef;
+        let screenWidth = 512 ;  // Screen dimensions for Hack computer
+        let screenHeight = 256;
+        let bankWidth = 110;    // Reduced bank width from 130 to 110
+        let bankHeight = 140;    // Reduced bank height from 100 to 90
+        let riverTop = 160;     // Keep this the same to maintain vertical spacing
+        let riverHeight = 70;   // Keep this the same
+        let riverWidth = screenWidth;
+        let boatWidth = 70;     // Keep boat width the same
+        let boatHeight = 25;    // Keep boat height the same
+        let personRadius = 8;   // Keep person radius the same
+        let textAreaHeight = 110; // Keep text area height the same
+        
+        return this;
+    }
+    
+    /** Disposes the UI object */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+    
+    /** Draws the initial game state */
+    method void drawInitialState() {
+        do Screen.clearScreen();
+        do drawInstructions();
+        do drawBackground();
+        return;
+    }
+    
+    /** Draws game instructions */
+    method void drawInstructions() {
+        do Output.moveCursor(0, 0);
+        do Output.printString("Monks and Cannibals");
+        do Output.moveCursor(1, 0);
+        do Output.printString("M: Add/Remove Monk");
+        do Output.moveCursor(2, 0);
+        do Output.printString("C: Add/Remove Cannibal");
+        do Output.moveCursor(3, 0);
+        do Output.printString("Space: Move Boat");
+        do Output.moveCursor(4, 0);
+        do Output.printString("Q: Quit");
+        return;
+    }
+    
+    /** Draws the game background */
+    method void drawBackground() {
+        // Clear the graphics area below text
+        do Screen.setColor(false);
+        do Screen.drawRectangle(0, textAreaHeight, screenWidth - 1, screenHeight - 1);
+        
+        // Draw left bank
+        do Screen.setColor(true);
+        do Screen.drawRectangle(0, riverTop, bankWidth, screenHeight - 1);
+        
+        // Draw right bank
+        do Screen.drawRectangle(screenWidth - bankWidth, riverTop, screenWidth - 1, screenHeight - 1);
+        
+        // River (draw by clearing the middle section)
+        do Screen.setColor(false);
+        do Screen.drawRectangle(bankWidth + 1, riverTop + 1, screenWidth - bankWidth - 2, riverTop + riverHeight - 1);
+        
+        return;
+    }
+    
+    /** Updates the entire display */
+    method void update() {
+        do clearGameObjects();
+        do drawGameObjects();
+        do updateStatusInfo();
+        return;
+    }
+    
+    /** Clears all game objects but leaves background */
+    method void clearGameObjects() {
+        // Clear middle section (river and people)
+        do Screen.setColor(false);
+        // Clear the river area
+        do Screen.drawRectangle(bankWidth + 1, riverTop + 1, screenWidth - bankWidth - 2, riverTop + riverHeight - 1);
+        // Clear above river (for people on banks)
+        do Screen.drawRectangle(0, textAreaHeight, screenWidth - 1, riverTop - 1);
+        return;
+    }
+    
+    /** Draws all game objects */
+    method void drawGameObjects() {
+        var int boatX, i, personX, personY;
+        var int leftBankPersonX, rightBankPersonX;
+        var int personSpacing;
+        
+        let personSpacing = 22;
+
+        // Clear the text status area
+        do Screen.setColor(false);
+        do Screen.drawRectangle(0, 70, screenWidth - 1, 110);
+        
+        // Display current status on screen
+        do Output.moveCursor(7, 0);
+        do Output.printString("Left bank: ");
+        do Output.printInt(game.getMonksLeft());
+        do Output.printString("M, ");
+        do Output.printInt(game.getCannibalsLeft());
+        do Output.printString("C  |  ");
+        
+        do Output.printString("Right bank: ");
+        do Output.printInt(game.getMonksRight());
+        do Output.printString("M, ");
+        do Output.printInt(game.getCannibalsRight());
+        do Output.printString("C  |  ");
+        
+        do Output.printString("Boat: ");
+        do Output.printInt(game.getMonksBoat());
+        do Output.printString("M, ");
+        do Output.printInt(game.getCannibalsBoat());
+        do Output.printString("C");
+        
+        do Output.moveCursor(8, 20);
+        if (game.isBoatOnLeft()) {
+            do Output.printString("Boat is on the LEFT bank");
+        } else {
+            do Output.printString("Boat is on the RIGHT bank");
+        }
+
+        // Redraw banks (might have been partially cleared)
+        do Screen.setColor(true);
+        do Screen.drawRectangle(0, riverTop, bankWidth, screenHeight - 1);
+        do Screen.drawRectangle(screenWidth - bankWidth, riverTop, screenWidth - 1, screenHeight - 1);
+        
+        // Draw boat
+        do Screen.setColor(true);
+        if (game.isBoatOnLeft()) {
+            let boatX = bankWidth + 10;
+        } else {
+            let boatX = screenWidth - bankWidth - boatWidth - 10;
+        }
+        do Screen.drawRectangle(boatX, riverTop + 10, boatX + boatWidth, riverTop + 10 + boatHeight);
+        
+        // Set initial positions for people on banks
+        let leftBankPersonX = 15; // Adjusted position to center people on narrower bank
+        let rightBankPersonX = screenWidth - bankWidth + 15; // Adjusted position to center people on narrower bank
+        
+        // People on left bank area
+        let personY = riverTop - 30; // Above the river
+        
+        // Draw monks on left bank
+        let i = 0;
+        let personX = leftBankPersonX;
+        while (i < game.getMonksLeft()) {
+            do drawMonk(personX, personY);
+            let personX = personX + personSpacing;
+            let i = i + 1;
+        }
+        
+        // Draw cannibals on left bank
+        let i = 0;
+        let personX = leftBankPersonX;
+        let personY = personY - 20; // Row above monks
+        while (i < game.getCannibalsLeft()) {
+            do drawCannibal(personX, personY);
+            let personX = personX + personSpacing;
+            let i = i + 1;
+        }
+        
+        // People on right bank area
+        let personY = riverTop - 30;
+        
+        // Draw monks on right bank
+        let i = 0;
+        let personX = rightBankPersonX;
+        while (i < game.getMonksRight()) {
+            do drawMonk(personX, personY);
+            let personX = personX + personSpacing;
+            let i = i + 1;
+        }
+        
+        // Draw cannibals on right bank
+        let i = 0;
+        let personX = rightBankPersonX;
+        let personY = personY - 20; // Row above monks
+        while (i < game.getCannibalsRight()) {
+            do drawCannibal(personX, personY);
+            let personX = personX + personSpacing;
+            let i = i + 1;
+        }
+        
+        // Draw people in boat - position them evenly in the boat
+        let personY = riverTop - 10; // Top of the boat
+        
+        // Calculate positions for people in boat
+        let personX = boatX + 15; // First position
+        
+        // Draw monks in boat
+        let i = 0;
+        while (i < game.getMonksBoat()) {
+            do drawMonk(personX, personY);
+            let personX = personX + 30; // More space in boat
+            let i = i + 1;
+        }
+        
+        // Draw cannibals in boat
+        let i = 0;
+        let personX = boatX + 15;
+        
+        // If there are monks, offset cannibals
+        if (game.getMonksBoat() > 0) {
+            let personX = personX + (game.getMonksBoat() * 30);
+        }
+        
+        while (i < game.getCannibalsBoat()) {
+            do drawCannibal(personX, personY);
+            let personX = personX + 30;
+            let i = i + 1;
+        }
+        
+        return;
+    }
+    
+    /** Draws a monk */
+    method void drawMonk(int x, int y) {
+        do Screen.setColor(true);
+        do Screen.drawCircle(x, y + 10, personRadius);
+        do Screen.setColor(false);
+        // Draw cross inside to represent monk
+        do Screen.drawLine(x - 4, y + 10 , x + 4, y+10);
+        do Screen.drawLine(x, y + 6, x, y + 14);
+        return;
+    }
+    
+    /** Draws a cannibal */
+    method void drawCannibal(int x, int y) {
+        do Screen.setColor(true);
+        do Screen.drawCircle(x, y + 10, personRadius);
+        // Draw simple face to represent cannibal
+        do Screen.setColor(false);
+        do Screen.drawCircle(x - 2, y + 8, 1); // Left eye
+        do Screen.drawCircle(x + 2, y + 8, 1); // Right eye
+        do Screen.drawLine(x - 2, y + 12 , x + 2, y + 12); // Mouth
+        return;
+    }
+    
+    /** Updates game status information */
+    method void updateStatusInfo() {
+        var int minutes, seconds;
+        var int remainingTime;
+        
+        let remainingTime = game.getStartTime();
+        let minutes = remainingTime / 60;
+        let seconds = remainingTime - (minutes * 60);
+
+        // Clear the text status area
+        do Screen.setColor(false);
+        do Screen.drawRectangle(0, 70, screenWidth - 1, 110);
+        
+        // Display current status on screen
+        do Output.moveCursor(6, 0);
+        do Output.printString("Player: ");
+        do Output.printString(game.getPlayerName());
+        do Output.printString(" | Moves: ");
+        do Output.printInt(game.getMoveCount());
+        do Output.printString(" | Time Left: ");
+        do Output.printInt(minutes);
+        do Output.printString("m ");
+        do Output.printInt(seconds);
+        do Output.printString("s");
+
+        do Output.moveCursor(7, 0);
+        do Output.printString("Left bank: ");
+        do Output.printInt(game.getMonksLeft());
+        do Output.printString("M, ");
+        do Output.printInt(game.getCannibalsLeft());
+        do Output.printString("C  |  ");
+        
+        do Output.printString("Right bank: ");
+        do Output.printInt(game.getMonksRight());
+        do Output.printString("M, ");
+        do Output.printInt(game.getCannibalsRight());
+        do Output.printString("C  |  ");
+        
+        do Output.printString("Boat: ");
+        do Output.printInt(game.getMonksBoat());
+        do Output.printString("M, ");
+        do Output.printInt(game.getCannibalsBoat());
+        do Output.printString("C");
+        
+        do Output.moveCursor(8, 20);
+        if (game.isBoatOnLeft()) {
+            do Output.printString("Boat is on the LEFT bank");
+        } else {
+            do Output.printString("Boat is on the RIGHT bank");
+        }
+        
+        return;
+    }
+    
+    /** Shows game over message */
+    method void showGameOverMessage(boolean won) {
+        var int minutes, seconds, timeTaken;
+        
+        do Screen.setColor(false);
+        do Screen.drawRectangle(100, 150, 412, 200);
+        do Screen.setColor(true);
+        do Screen.drawRectangle(100, 150, 412, 200);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(102, 152, 410, 198);
+        do Screen.setColor(true);
+        
+        do Output.moveCursor(13, 20);
+        if (won) {
+            let timeTaken = game.getElapsedTime();
+            let minutes = timeTaken / 60;
+            let seconds = timeTaken - (minutes * 60);
+            
+            do Output.printString("You Won! Congratulations!");
+            do Output.moveCursor(14, 20);
+            do Output.printString("Moves: ");
+            do Output.printInt(game.getMoveCount());
+            do Output.printString(" | Time Taken: ");
+            do Output.printInt(minutes);
+            do Output.printString("m ");
+            do Output.printInt(seconds);
+            do Output.printString("s");
+        } else {
+            if (game.getStartTime() < 1) {
+                do Output.printString("Game Over - Time's Up!");
+            } else {
+                do Output.printString("Game Over - Monks were eaten!");
+            }
+        }
+        
+        do Output.moveCursor(15, 20);
+        do Output.printString("Press Q to exit");
+        
+        return;
+    }
+
+    /** Shows the leaderboard */
+    method void showLeaderboard(Leaderboard leaderboard) {
+        var int i, minutes, seconds;
+        var String diffText;
+        
+        do Screen.clearScreen();
+        do Output.moveCursor(0, 25);
+        do Output.printString("=== LEADERBOARD ===");
+        
+        do Output.moveCursor(2, 0);
+        do Output.printString("Rank  Name      Moves   Time     Difficulty");
+        
+        let i = 0;
+        while (i < leaderboard.getSize()) {
+            let minutes = leaderboard.getTime(i) / 60;
+            let seconds = leaderboard.getTime(i) - (minutes * 60);
+            
+            if (leaderboard.getDifficulty(i) = 1) {
+                let diffText = "Easy";
+            }
+            if (leaderboard.getDifficulty(i) = 2) {
+                let diffText = "Medium";
+            }
+            if (leaderboard.getDifficulty(i) = 3) {
+                let diffText = "Hard";
+            }
+            
+            do Output.moveCursor(4 + i, 0);
+            do Output.printInt(i + 1);
+            do Output.printString(".    ");
+            do Output.printString(leaderboard.getName(i));
+            do Output.moveCursor(4 + i, 15);
+            do Output.printInt(leaderboard.getMoves(i));
+            do Output.moveCursor(4 + i, 23);
+            do Output.printInt(minutes);
+            do Output.printString("m ");
+            do Output.printInt(seconds);
+            do Output.printString("s");
+            do Output.moveCursor(4 + i, 33);
+            do Output.printString(diffText);
+            
+            let i = i + 1;
+        }
+        
+        return;
+    }
+}

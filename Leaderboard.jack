@@ -1,0 +1,104 @@
+/**
+ * Leaderboard class manages player scores and rankings.
+ */
+class Leaderboard {
+    field Array names;      // Array of player names
+    field Array moves;      // Array of moves taken
+    field Array times;      // Array of completion times
+    field Array difficulty; // Array of difficulty levels
+    field int size;        // Current number of entries
+    field int maxSize;     // Maximum number of entries
+
+    /** Constructs a new Leaderboard */
+    constructor Leaderboard new() {
+        let maxSize = 5;  // Store top 5 scores
+        let size = 0;
+        let names = Array.new(maxSize);
+        let moves = Array.new(maxSize);
+        let times = Array.new(maxSize);
+        let difficulty = Array.new(maxSize);
+        return this;
+    }
+
+    /** Disposes the leaderboard */
+    method void dispose() {
+        do names.dispose();
+        do moves.dispose();
+        do times.dispose();
+        do difficulty.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Adds a new score to the leaderboard */
+    method void addScore(String name, int moveCount, int timeElapsed, int diffLevel) {
+        var int i, j;
+        var String tempName;
+        var int tempMoves, tempTime, tempDiff;
+        var int currentMoves;
+
+        // Find position to insert new score (sorted by moves)
+        let i = 0;
+        while (i < size) {
+            if (size > 0) {
+                let currentMoves = moves[i];
+                if (moveCount < currentMoves) {
+                    let i = i;
+                }
+                else {
+                    let i = i + 1;
+                }
+            }
+            else {
+                let i = i + 1;
+            }
+        }
+
+        // If leaderboard isn't full, increase size
+        if (size < maxSize) {
+            let size = size + 1;
+        }
+
+        // Shift existing entries down
+        let j = size - 1;
+        while (j > i) {
+            let names[j] = names[j-1];
+            let moves[j] = moves[j-1];
+            let times[j] = times[j-1];
+            let difficulty[j] = difficulty[j-1];
+            let j = j - 1;
+        }
+
+        // Insert new score
+        let names[i] = name;
+        let moves[i] = moveCount;
+        let times[i] = timeElapsed;
+        let difficulty[i] = diffLevel;
+        return;
+    }
+
+    /** Gets the current size of the leaderboard */
+    method int getSize() {
+        return size;
+    }
+
+    /** Gets a name at specified index */
+    method String getName(int index) {
+        return names[index];
+    }
+
+    /** Gets moves at specified index */
+    method int getMoves(int index) {
+        return moves[index];
+    }
+
+    /** Gets time at specified index */
+    method int getTime(int index) {
+        return times[index];
+    }
+
+    /** Gets difficulty at specified index */
+    method int getDifficulty(int index) {
+        return difficulty[index];
+    }
+} 

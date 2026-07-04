@@ -1,0 +1,852 @@
+function Game.new 0
+push constant 17
+call Memory.alloc 1
+pop pointer 0
+call Leaderboard.new 0
+pop this 15
+push pointer 0
+call Game.initializeGame 1
+pop temp 0
+push pointer 0
+return
+function Game.initializeGame 0
+push argument 0
+pop pointer 0
+push constant 17
+call String.new 1
+push constant 69
+call String.appendChar 2
+push constant 110
+call String.appendChar 2
+push constant 116
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 121
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 117
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 110
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 109
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call Keyboard.readLine 1
+pop this 10
+push pointer 0
+call Game.chooseDifficulty 1
+pop temp 0
+push this 16
+pop this 0
+push this 16
+pop this 1
+push constant 0
+pop this 2
+push constant 0
+pop this 3
+push constant 0
+not
+pop this 4
+push constant 0
+pop this 5
+push constant 0
+pop this 6
+push constant 0
+pop this 7
+push constant 0
+pop this 8
+push constant 0
+pop this 12
+push constant 300
+pop this 13
+push constant 0
+pop this 14
+push pointer 0
+call GameUI.new 1
+pop this 9
+push constant 0
+return
+function Game.chooseDifficulty 2
+push argument 0
+pop pointer 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+not
+not
+if-goto WHILE_END0
+push constant 0
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 18
+call String.new 1
+push constant 67
+call String.appendChar 2
+push constant 104
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 115
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 68
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 102
+call String.appendChar 2
+push constant 102
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 99
+call String.appendChar 2
+push constant 117
+call String.appendChar 2
+push constant 108
+call String.appendChar 2
+push constant 116
+call String.appendChar 2
+push constant 121
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 1
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 17
+call String.new 1
+push constant 49
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 115
+call String.appendChar 2
+push constant 121
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 40
+call String.appendChar 2
+push constant 51
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 112
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 115
+call String.appendChar 2
+push constant 41
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 2
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 19
+call String.new 1
+push constant 50
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 77
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 100
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 117
+call String.appendChar 2
+push constant 109
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 40
+call String.appendChar 2
+push constant 52
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 112
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 115
+call String.appendChar 2
+push constant 41
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 3
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 17
+call String.new 1
+push constant 51
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 72
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 100
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 40
+call String.appendChar 2
+push constant 53
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 112
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 115
+call String.appendChar 2
+push constant 41
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+call Keyboard.readChar 0
+pop local 0
+push local 0
+push constant 49
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 1
+pop this 11
+push constant 3
+pop this 16
+push constant 0
+not
+pop local 1
+label IF_FALSE0
+push local 0
+push constant 50
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 2
+pop this 11
+push constant 4
+pop this 16
+push constant 0
+not
+pop local 1
+label IF_FALSE1
+push local 0
+push constant 51
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 3
+pop this 11
+push constant 5
+pop this 16
+push constant 0
+not
+pop local 1
+label IF_FALSE2
+goto WHILE_EXP0
+label WHILE_END0
+call Screen.clearScreen 0
+pop temp 0
+push constant 0
+return
+function Game.dispose 0
+push argument 0
+pop pointer 0
+push this 9
+push constant 0
+eq
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 9
+call GameUI.dispose 1
+pop temp 0
+label IF_FALSE0
+push this 15
+push constant 0
+eq
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 15
+call Leaderboard.dispose 1
+pop temp 0
+label IF_FALSE1
+push this 10
+push constant 0
+eq
+not
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 10
+call String.dispose 1
+pop temp 0
+label IF_FALSE2
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Game.run 4
+push argument 0
+pop pointer 0
+push constant 0
+pop local 1
+push constant 300
+pop this 13
+push constant 0
+pop this 14
+push constant 0
+pop local 3
+push this 9
+call GameUI.drawInitialState 1
+pop temp 0
+push this 9
+call GameUI.update 1
+pop temp 0
+label WHILE_EXP0
+push local 1
+not
+not
+if-goto WHILE_END0
+push constant 0
+pop local 2
+call Keyboard.keyPressed 0
+pop local 0
+push this 13
+push constant 1
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop this 7
+push constant 0
+pop this 8
+push constant 0
+not
+pop local 1
+label IF_FALSE0
+push local 0
+push constant 81
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+pop local 1
+label IF_FALSE1
+push local 0
+push constant 77
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push pointer 0
+call Game.handleMonkKeyPress 1
+pop temp 0
+push constant 0
+not
+pop local 2
+label IF_FALSE2
+push local 0
+push constant 67
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push pointer 0
+call Game.handleCannibalKeyPress 1
+pop temp 0
+push constant 0
+not
+pop local 2
+label IF_FALSE3
+push local 0
+push constant 32
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push pointer 0
+call Game.moveBoat 1
+pop temp 0
+push constant 0
+not
+pop local 2
+label IF_FALSE4
+push local 2
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push this 12
+push constant 1
+add
+pop this 12
+push pointer 0
+call Game.checkGameStatus 1
+pop temp 0
+push this 9
+call GameUI.update 1
+pop temp 0
+push constant 200
+call Sys.wait 1
+pop temp 0
+push this 8
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 300
+push this 13
+sub
+pop this 14
+push constant 0
+not
+pop local 1
+label IF_FALSE6
+label IF_FALSE5
+push local 3
+push constant 1
+add
+pop local 3
+push local 3
+push constant 20
+gt
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 0
+pop local 3
+push this 13
+push constant 1
+sub
+pop this 13
+push this 9
+call GameUI.update 1
+pop temp 0
+label IF_FALSE7
+push this 7
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push constant 0
+not
+pop local 1
+label IF_FALSE8
+push constant 50
+call Sys.wait 1
+pop temp 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 8
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
+push constant 300
+push this 13
+sub
+pop this 14
+push this 15
+push this 10
+push this 12
+push this 14
+push this 11
+call Leaderboard.addScore 5
+pop temp 0
+label IF_FALSE9
+push this 9
+push this 8
+call GameUI.showGameOverMessage 2
+pop temp 0
+push constant 2000
+call Sys.wait 1
+pop temp 0
+call Screen.clearScreen 0
+pop temp 0
+push this 9
+push this 15
+call GameUI.showLeaderboard 2
+pop temp 0
+push constant 5000
+call Sys.wait 1
+pop temp 0
+push constant 0
+return
+function Game.handleMonkKeyPress 0
+push argument 0
+pop pointer 0
+push this 4
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 5
+push constant 0
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 5
+push constant 1
+sub
+pop this 5
+push this 0
+push constant 1
+add
+pop this 0
+goto IF_END1
+label IF_FALSE1
+push this 0
+push constant 0
+gt
+push this 5
+push this 6
+add
+push constant 2
+lt
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 5
+push constant 1
+add
+pop this 5
+push this 0
+push constant 1
+sub
+pop this 0
+label IF_FALSE2
+label IF_END1
+goto IF_END0
+label IF_FALSE0
+push this 5
+push constant 0
+gt
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 5
+push constant 1
+sub
+pop this 5
+push this 2
+push constant 1
+add
+pop this 2
+goto IF_END3
+label IF_FALSE3
+push this 2
+push constant 0
+gt
+push this 5
+push this 6
+add
+push constant 2
+lt
+and
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push this 5
+push constant 1
+add
+pop this 5
+push this 2
+push constant 1
+sub
+pop this 2
+label IF_FALSE4
+label IF_END3
+label IF_END0
+push constant 0
+return
+function Game.handleCannibalKeyPress 0
+push argument 0
+pop pointer 0
+push this 4
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 6
+push constant 0
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 6
+push constant 1
+sub
+pop this 6
+push this 1
+push constant 1
+add
+pop this 1
+goto IF_END1
+label IF_FALSE1
+push this 1
+push constant 0
+gt
+push this 5
+push this 6
+add
+push constant 2
+lt
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 6
+push constant 1
+add
+pop this 6
+push this 1
+push constant 1
+sub
+pop this 1
+label IF_FALSE2
+label IF_END1
+goto IF_END0
+label IF_FALSE0
+push this 6
+push constant 0
+gt
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 6
+push constant 1
+sub
+pop this 6
+push this 3
+push constant 1
+add
+pop this 3
+goto IF_END3
+label IF_FALSE3
+push this 3
+push constant 0
+gt
+push this 5
+push this 6
+add
+push constant 2
+lt
+and
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push this 6
+push constant 1
+add
+pop this 6
+push this 3
+push constant 1
+sub
+pop this 3
+label IF_FALSE4
+label IF_END3
+label IF_END0
+push constant 0
+return
+function Game.moveBoat 0
+push argument 0
+pop pointer 0
+push this 5
+push this 6
+add
+push constant 0
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 4
+not
+pop this 4
+label IF_FALSE0
+push constant 0
+return
+function Game.checkGameStatus 0
+push argument 0
+pop pointer 0
+push this 2
+push this 16
+eq
+push this 3
+push this 16
+eq
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop this 7
+push constant 0
+not
+pop this 8
+push constant 300
+push this 13
+sub
+pop this 14
+push constant 0
+return
+label IF_FALSE0
+push this 0
+push constant 0
+gt
+push this 1
+push this 0
+gt
+and
+push this 2
+push constant 0
+gt
+push this 3
+push this 2
+gt
+and
+or
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+pop this 7
+push constant 0
+pop this 8
+label IF_FALSE1
+push constant 0
+return
+function Game.getMonksLeft 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Game.getCannibalsLeft 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Game.getMonksRight 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Game.getCannibalsRight 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Game.getMonksBoat 0
+push argument 0
+pop pointer 0
+push this 5
+return
+function Game.getCannibalsBoat 0
+push argument 0
+pop pointer 0
+push this 6
+return
+function Game.isBoatOnLeft 0
+push argument 0
+pop pointer 0
+push this 4
+return
+function Game.getMoveCount 0
+push argument 0
+pop pointer 0
+push this 12
+return
+function Game.getPlayerName 0
+push argument 0
+pop pointer 0
+push this 10
+return
+function Game.getDifficultyLevel 0
+push argument 0
+pop pointer 0
+push this 11
+return
+function Game.getStartTime 0
+push argument 0
+pop pointer 0
+push this 13
+return
+function Game.getElapsedTime 0
+push argument 0
+pop pointer 0
+push this 14
+return

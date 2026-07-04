@@ -1,0 +1,281 @@
+/**
+ * Game class manages the game state and logic.
+ */
+class Game {
+    field int mLeft, cLeft; // Monks and cannibals on left bank
+    field int mRight, cRight; // Monks and cannibals on right bank
+    field boolean boatOnLeft; // Boat position (true = left bank)
+    field int mBoat, cBoat; // Monks and cannibals in boat
+    field boolean gameOver, gameWon;
+    field GameUI ui;
+    field String playerName;
+    field int difficultyLevel;
+    field int moveCount;
+    field int startTime;
+    field int elapsedTime;
+    field Leaderboard leaderboard;
+    field int maxPeople; // Maximum number of monks/cannibals based on difficulty
+
+    /** Constructs a new Game instance */
+    constructor Game new() {
+        let leaderboard = Leaderboard.new();
+        do initializeGame();
+        return this;
+    }
+
+    /** Initialize game state */
+    method void initializeGame() {
+        let playerName = Keyboard.readLine("Enter your name: ");
+        do chooseDifficulty();
+        let mLeft = maxPeople;
+        let cLeft = maxPeople;
+        let mRight = 0;
+        let cRight = 0;
+        let boatOnLeft = true;
+        let mBoat = 0;
+        let cBoat = 0;
+        let gameOver = false;
+        let gameWon = false;
+        let moveCount = 0;
+        let startTime = 300; // 5 minutes in seconds
+        let elapsedTime = 0;
+        let ui = GameUI.new(this);
+        return;
+    }
+
+    /** Choose difficulty level */
+    method void chooseDifficulty() {
+        var char key;
+        var boolean chosen;
+        
+        let chosen = false;
+        while (~chosen) {
+            do Output.moveCursor(0, 0);
+            do Output.printString("Choose Difficulty:");
+            do Output.moveCursor(1, 0);
+            do Output.printString("1: Easy (3 pairs)");
+            do Output.moveCursor(2, 0);
+            do Output.printString("2: Medium (4 pairs)");
+            do Output.moveCursor(3, 0);
+            do Output.printString("3: Hard (5 pairs)");
+            
+            let key = Keyboard.readChar();
+            
+            if (key = 49) { // 1 key
+                let difficultyLevel = 1;
+                let maxPeople = 3;
+                let chosen = true;
+            }
+            if (key = 50) { // 2 key
+                let difficultyLevel = 2;
+                let maxPeople = 4;
+                let chosen = true;
+            }
+            if (key = 51) { // 3 key
+                let difficultyLevel = 3;
+                let maxPeople = 5;
+                let chosen = true;
+            }
+        }
+        do Screen.clearScreen();
+        return;
+    }
+
+    /** Disposes the game object */
+    method void dispose() {
+        if (~(ui = null)) {
+            do ui.dispose();
+        }
+        if (~(leaderboard = null)) {
+            do leaderboard.dispose();
+        }
+        if (~(playerName = null)) {
+            do playerName.dispose();
+        }
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Main game loop */
+    method void run() {
+        var char key;
+        var boolean exit;
+        var boolean actionTaken;
+        var int tickCounter;
+        
+        let exit = false;
+        let startTime = 300; // 5 minutes in seconds
+        let elapsedTime = 0;
+        let tickCounter = 0;
+        
+        do ui.drawInitialState();
+        do ui.update(); // Draw initial state of people
+        
+        while (~exit) {
+            let actionTaken = false;
+            let key = Keyboard.keyPressed();
+            
+            // Check if time is up
+            if (startTime < 1) {
+                let gameOver = true;
+                let gameWon = false;
+                let exit = true;
+            }
+            
+            if (key = 81) { // Q key to quit
+                let exit = true;
+            }
+            
+            if (key = 77) { // M key to add/remove monk
+                do handleMonkKeyPress();
+                let actionTaken = true;
+            }
+            
+            if (key = 67) { // C key to add/remove cannibal
+                do handleCannibalKeyPress();
+                let actionTaken = true;
+            }
+            
+            if (key = 32) { // Space to move boat
+                do moveBoat();
+                let actionTaken = true;
+            }
+            
+            if (actionTaken) {
+                let moveCount = moveCount + 1;
+                do checkGameStatus();
+                do ui.update(); // Update UI immediately after action
+                do Sys.wait(200); // Small delay after action for better user experience
+                
+                // Calculate elapsed time if game is won
+                if (gameWon) {
+                    let elapsedTime = 300 - startTime;
+                    let exit = true;
+                }
+            }
+            
+            // Timer logic - update every second without blocking the game
+            let tickCounter = tickCounter + 1;
+            if (tickCounter > 20) { // Assuming 50ms wait, 20 ticks = 1 second
+                let tickCounter = 0;
+                let startTime = startTime - 1;
+                do ui.update(); // Update UI for timer change
+            }
+            
+            if (gameOver) {
+                let exit = true;
+            }
+            
+            do Sys.wait(50); // Small wait to prevent CPU overload
+        }
+        
+        // Calculate final elapsed time for game over
+        if (gameWon) {
+            let elapsedTime = 300 - startTime;
+            do leaderboard.addScore(playerName, moveCount, elapsedTime, difficultyLevel);
+        }
+        do ui.showGameOverMessage(gameWon);
+        do Sys.wait(2000); // Wait 2 seconds before showing leaderboard
+        
+        // Clear screen before showing leaderboard
+        do Screen.clearScreen();
+        do ui.showLeaderboard(leaderboard);
+        do Sys.wait(5000);
+        return;
+    }
+    
+    /** Handle monk key press */
+    method void handleMonkKeyPress() {
+        // If boat is on left bank
+        if (boatOnLeft) {
+            if (mBoat > 0) { // Remove from boat
+                let mBoat = mBoat - 1;
+                let mLeft = mLeft + 1;
+            } else {
+                if ((mLeft > 0) & ((mBoat + cBoat) < 2)) { // Add to boat if space
+                    let mBoat = mBoat + 1;
+                    let mLeft = mLeft - 1;
+                }
+            }
+        } else {
+            if (mBoat > 0) { // Remove from boat
+                let mBoat = mBoat - 1;
+                let mRight = mRight + 1;
+            } else {
+                if ((mRight > 0) & ((mBoat + cBoat) < 2)) { // Add to boat if space
+                    let mBoat = mBoat + 1;
+                    let mRight = mRight - 1;
+                }
+            }
+        }
+        return;
+    }
+
+    /** Handle cannibal key press */
+    method void handleCannibalKeyPress() {
+        // If boat is on left bank
+        if (boatOnLeft) {
+            if (cBoat > 0) { // Remove from boat
+                let cBoat = cBoat - 1;
+                let cLeft = cLeft + 1;
+            } else {
+                if ((cLeft > 0) & ((mBoat + cBoat) < 2)) { // Add to boat if space
+                    let cBoat = cBoat + 1;
+                    let cLeft = cLeft - 1;
+                }
+            }
+        } else {
+            if (cBoat > 0) { // Remove from boat
+                let cBoat = cBoat - 1;
+                let cRight = cRight + 1;
+            } else {
+                if ((cRight > 0) & ((mBoat + cBoat) < 2)) { // Add to boat if space
+                    let cBoat = cBoat + 1;
+                    let cRight = cRight - 1;
+                }
+            }
+        }
+        return;
+    }
+
+    /** Move the boat if it has at least one person */
+    method void moveBoat() {
+        if ((mBoat + cBoat) > 0) {
+            let boatOnLeft = ~boatOnLeft;
+        }
+        return;
+    }
+
+    /** Check if the game is won or lost */
+    method void checkGameStatus() {
+        // Check win condition
+        if ((mRight = maxPeople) & (cRight = maxPeople)) {
+            let gameOver = true;
+            let gameWon = true;
+            let elapsedTime = 300 - startTime; // Calculate elapsed time immediately when won
+            return;
+        }
+        
+        // Check if monks are eaten (more cannibals than monks on either bank)
+        if (((mLeft > 0) & (cLeft > mLeft)) | ((mRight > 0) & (cRight > mRight))) {
+            let gameOver = true;
+            let gameWon = false;
+        }
+        
+        return;
+    }
+    
+    // Accessor methods
+    method int getMonksLeft() { return mLeft; }
+    method int getCannibalsLeft() { return cLeft; }
+    method int getMonksRight() { return mRight; }
+    method int getCannibalsRight() { return cRight; }
+    method int getMonksBoat() { return mBoat; }
+    method int getCannibalsBoat() { return cBoat; }
+    method boolean isBoatOnLeft() { return boatOnLeft; }
+    method int getMoveCount() { return moveCount; }
+    method String getPlayerName() { return playerName; }
+    method int getDifficultyLevel() { return difficultyLevel; }
+    method int getStartTime() { return startTime; }
+    method int getElapsedTime() { return elapsedTime; }
+}

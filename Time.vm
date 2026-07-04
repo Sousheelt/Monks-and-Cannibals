@@ -1,0 +1,52 @@
+function Time.init 0
+push constant 300
+pop static 3
+push static 3
+pop static 0
+push constant 0
+pop static 1
+push constant 20
+pop static 2
+push constant 0
+return
+function Time.getTime 0
+push static 3
+push static 0
+sub
+return
+function Time.getRemainingTime 0
+push static 0
+return
+function Time.tick 0
+push static 1
+push constant 1
+add
+pop static 1
+push static 1
+push static 2
+push constant 1
+sub
+gt
+push static 0
+push constant 0
+gt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop static 1
+push static 0
+push constant 1
+sub
+pop static 0
+label IF_FALSE0
+push constant 0
+return
+function Time.reset 0
+push static 3
+pop static 0
+push constant 0
+pop static 1
+push constant 0
+return
